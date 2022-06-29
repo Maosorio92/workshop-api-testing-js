@@ -3,7 +3,6 @@ const { expect } = require('chai');
 const { StatusCodes } = require('http-status-codes');
 
 describe('First Api Tests', () => {
-
   it('Consume GET Service', async () => {
     const response = await axios.get('https://httpbin.org/ip');
     expect(response.status).to.equal(StatusCodes.OK);
@@ -21,9 +20,9 @@ describe('First Api Tests', () => {
     expect(response.config.query).to.eql(query);
   });
 
- newuser={
-    "name": "Manuel", "age":"29", "born_in":"Colombia", "activity":"learning"
-}
+  const newuser = {
+    name: 'Manuel', age: '29', born_in: 'Colombia', activity: 'learning'
+  };
 
   it('Consume HEAD Service', async () => {
     const response = await axios.head('https://httpbin.org/get');
@@ -32,27 +31,26 @@ describe('First Api Tests', () => {
   });
 
   it('Consume POST Service', async () => {
-    const response = await axios.post('https://httpbin.org/post',newuser);
+    const response = await axios.post('https://httpbin.org/post', newuser);
     expect(response.status).to.equal(StatusCodes.OK);
-    expect(response.data.json).to.have.property("name");
+    expect(response.data.json).to.have.property('name');
   });
 
   it('Consume PATCH Service', async () => {
-    const response = await axios.patch('https://httpbin.org/patch',newuser);
+    const response = await axios.patch('https://httpbin.org/patch', newuser);
     expect(response.status).to.equal(StatusCodes.OK);
-    expect(response.data.json).to.have.property("age");
+    expect(response.data.json).to.have.property('age');
   });
 
   it('Consume PUT Service', async () => {
-    const response = await axios.put('https://httpbin.org/put',newuser);
+    const response = await axios.put('https://httpbin.org/put', newuser);
     expect(response.status).to.equal(StatusCodes.OK);
-    expect(response.data.json).to.have.property("born_in");
+    expect(response.data.json).to.have.property('born_in');
   });
-  
+
   it('Consume DELETE Service', async () => {
-    const response = await axios.delete('https://httpbin.org/delete',newuser);
+    const response = await axios.delete('https://httpbin.org/delete', newuser);
     expect(response.status).to.equal(StatusCodes.OK);
     expect(response.data.json).to.length.to.eql(null);
   });
-  
 });
