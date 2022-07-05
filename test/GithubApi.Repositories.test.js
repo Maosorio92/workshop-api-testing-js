@@ -7,11 +7,8 @@ const md5 = require('md5');
 
 chai.use(chaiSubset);
 
-const urlrepos = 'https://api.github.com/repos/aperdomob/jasmine-json-report';
-
 describe('Repositories GET', () => {
   let userResponse;
-
   before(async () => {
     userResponse = await axios.get('https://api.github.com/users/aperdomob');
   });
@@ -21,11 +18,10 @@ describe('Repositories GET', () => {
     expect(userResponse.data.company).to.equal('Perficient Latam');
     expect(userResponse.data.location).to.equal('Colombia');
   });
-
   describe('Using hypermedia', () => {
     let jasmineRepo;
     before(async () => {
-      const repositoriesResponse = await axios.get(`${userResponse.repos_url}`);
+      const repositoriesResponse = await axios.get(`${userResponse.data.repos_url}`);
       jasmineRepo = repositoriesResponse.data.find(
         (repo) => repo.name === 'jasmine-json-report'
       );
@@ -36,11 +32,12 @@ describe('Repositories GET', () => {
       expect(jasmineRepo.description).not.equal(null);
     });
     it('Downloading by zip', async () => {
-      const response = await axios.get(`${urlrepos}/zipball/master`);
+      const response = await axios.get(`${jasmineRepo.url}/zipball/master`);
       expect(response.status).to.equal(StatusCodes.OK);
+      expect(response.headers['content-type']).to.equal('application/zip');
     });
     it('Finding REAMDE', async () => {
-      const response = await axios.get('https://api.github.com/repos/aperdomob/jasmine-json-report/contents');
+      const response = await axios.get(`${jasmineRepo.url}/contents`);
       const obj = response.data;
       expect(obj).to.containSubset([{
         name: 'README.md',
@@ -49,12 +46,12 @@ describe('Repositories GET', () => {
       }]);
       expect(response.status).to.equal(StatusCodes.OK);
     });
-    it('Downloading REAMDE and checking md5', async () => {
-      const response = await axios.get('https://raw.githubusercontent.com/aperdomob/jasmine-json-report/master/README.md');
-      const obj = response.data;
+    it('Downloading README and checking md5', async () => {
+      const response = await axios.get(`${jasmineRepo.url}/contents`);
+      const response2 = await axios.get(`${response.data[2].download_url}`);
+      const obj = response2.data;
       const hash = md5(obj);
-      console.log(`MD5 is ${hash}`);
-      expect(hash).not.equal(null);
+      expect(hash).to.equal('497eb689648cbbda472b16baaee45731');
     });
   });
 });
