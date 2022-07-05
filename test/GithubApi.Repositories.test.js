@@ -46,9 +46,9 @@ describe('Repositories GET', () => {
       }]);
       expect(response.status).to.equal(StatusCodes.OK);
     });
-    it('Downloading README and checking md5', async () => {
+    it('Downloading README and checking md5 V2', async () => {
       const response = await axios.get(`${jasmineRepo.url}/contents`);
-      const response2 = await axios.get(`${response.data[2].download_url}`);
+      const response2 = await axios.get(`${response.data.find((repo) => repo.name === 'README.md').download_url}`);
       const obj = response2.data;
       const hash = md5(obj);
       expect(hash).to.equal('497eb689648cbbda472b16baaee45731');
