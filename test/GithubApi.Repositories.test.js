@@ -15,7 +15,7 @@ describe('Repositories GET', () => {
   before(async () => {
     userResponse = await axios.get('https://api.github.com/users/aperdomob');
   });
-  it('Consume GET Service on GITHUB API', async () => {
+  it('Consume GET Service on GITHUB API', () => {
     expect(userResponse.status).to.equal(StatusCodes.OK);
     expect(userResponse.data.name).to.equal('Alejandro Perdomo');
     expect(userResponse.data.company).to.equal('Perficient Latam');
@@ -26,9 +26,11 @@ describe('Repositories GET', () => {
     let jasmineRepo;
     before(async () => {
       const repositoriesResponse = await axios.get(`${userResponse.repos_url}`);
-      jasmineRepo = repositoriesResponse.data.find((repo) => repo.name === 'jasmine-json-report');
+      jasmineRepo = repositoriesResponse.data.find(
+        (repo) => repo.name === 'jasmine-json-report'
+      );
     });
-    it('Finding by Hypermedia', async () => {
+    it('To verify jasmin repo', () => {
       expect(jasmineRepo.name).to.equal('jasmine-json-report');
       expect(jasmineRepo.private).to.equal(false);
       expect(jasmineRepo.description).not.equal(null);
