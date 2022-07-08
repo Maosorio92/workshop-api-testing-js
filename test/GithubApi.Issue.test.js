@@ -2,52 +2,49 @@ const { StatusCodes } = require('http-status-codes');
 const { expect } = require('chai');
 const axios = require('axios');
 
-const urlBase = 'https://api.github.com/user';
+const userUrl = 'https://api.github.com/user';
 const token = process.env.ACCESS_TOKEN;
 
-const urlBase2 = 'https://api.github.com/repos/Maosorio92/miweb/issues';
-const obj = axios.create({
-  url: urlBase2,
+const miWebIssuesUrl = 'https://api.github.com/repos/Maosorio92/miweb/issues';
+const axiosClient = axios.create({
   headers: {
     Authorization: `token ${token}`
   }
 });
 describe('Methods PATCH & POST', () => {
-  let response;
+  let reposResponse;
+  let issueCreationResponse;
   before(async () => {
-    response = await axios.get(`${urlBase}`, {
+    const userResponse = await axiosClient.get(`${userUrl}`, {
       headers: {
         Authorization: `token ${token}`
       }
     });
+    reposResponse = await axiosClient.get(`${userResponse.data.repos_url}`);
   });
   it('Get Loged User', async () => {
-    const response2 = await axios.get(`${response.data.repos_url}`);
-    const repos = response2.data.find((x) => x.visibility === 'public');
-    expect(response.status).to.equal(StatusCodes.OK);
-    expect(repos.visibility).to.equal('public');
+    expect(reposResponse.status).to.equal(StatusCodes.OK);
+    expect(reposResponse.data.find((x) => x.visibility === 'public')).to.not.equal(undefined);
   });
   it('Repo exists', async () => {
-    const response2 = await axios.get(`${response.data.repos_url}`);
-    const repos = response2.data.find((x) => x.name === 'miweb');
-    expect(response.status).to.equal(StatusCodes.OK);
-    expect(repos.id).to.not.equal(undefined);
+    expect(reposResponse.status).to.equal(StatusCodes.OK);
+    expect(reposResponse.data.find((x) => x.name === 'miweb')).to.not.equal(undefined);
   });
   it('Creating Issue', async () => {
-    const response2 = await obj.post(`${urlBase2}`, {
-      title: 'Issue5'
+    issueCreationResponse = await axiosClient.post(`${miWebIssuesUrl}`, {
+      title: 'Issue7'
     });
-    expect(response2.data.body).to.equal(null);
-    expect(response2.status).to.equal(201);
-    expect(response2.data.title).to.equal('Issue5');
+    console.log(issueCreationResponse.data.number);
+    expect(issueCreationResponse.data.body).to.equal(null);
+    expect(issueCreationResponse.status).to.equal(201);
+    expect(issueCreationResponse.data.title).to.equal('Issue7');
   });
   it('Changing Issue', async () => {
-    const response2 = await obj.patch(`${urlBase2}/17`, {
-      title: 'Issue3',
-      body: 'Learning and learning'
+    const issueUpdated = axiosClient.patch(`${miWebIssuesUrl}/${issueCreationResponse.data.number}`, {
+      body: 'Learning and learningx2'
     });
-    expect(response2.data.body).to.equal('Learning and learning');
-    expect(response2.status).to.equal(StatusCodes.OK);
-    expect(response2.data.title).to.equal('Issue3');
+    expect(issueUpdated.data.body).to.equal('Learning and learning');
+    expect(issueUpdated.status).to.equal(StatusCodes.OK);
+    expect(issueUpdated.data.title).to.equal('Issue7');
   });
 });
