@@ -34,7 +34,6 @@ describe('Methods PATCH & POST', () => {
     issueCreationResponse = await axiosClient.post(`${miWebIssuesUrl}`, {
       title: 'Issue7'
     });
-    console.log(issueCreationResponse.data.number);
     expect(issueCreationResponse.data.body).to.equal(null);
     expect(issueCreationResponse.status).to.equal(201);
     expect(issueCreationResponse.data.title).to.equal('Issue7');
