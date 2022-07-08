@@ -39,15 +39,11 @@ describe('Methods PATCH & POST', () => {
     expect(issueCreationResponse.data.title).to.equal('Issue8');
   });
   it('Changing Issue', async () => {
-    const issueUpdated = axiosClient.patch(`${miWebIssuesUrl}/${issueCreationResponse.data.number}`, {
+    const issueUpdated = await axiosClient.patch(`${miWebIssuesUrl}/${issueCreationResponse.data.number}`, {
       body: 'Learning and learningx2'
     });
-    (
-      async () => {
-        expect(await issueUpdated.data.body).to.equal('Learning and learningx2');
-        expect(await issueUpdated.status).to.equal(StatusCodes.OK);
-        expect(await issueUpdated.data.title).to.equal('Issue8');
-      }
-    )();
+    expect(issueUpdated.data.body).to.equal('Learning and learningx2');
+    expect(issueUpdated.status).to.equal(StatusCodes.OK);
+    expect(issueUpdated.data.title).to.equal('Issue8');
   });
 });
