@@ -9,7 +9,6 @@ chai.use(chaiSubset);
 const userUrl = 'https://api.github.com/gists';
 const token = process.env.ACCESS_TOKEN;
 const gistUrl = 'https://api.github.com/gists';
-const usergistUrl = 'https://api.github.com/users/Maosorio92/gists';
 const gist = {
   description: 'Example of a gist of JS Promise',
   public: true,
@@ -59,7 +58,12 @@ describe('DELETE Method', () => {
     expect(gistResponse.status).to.equal(StatusCodes.NO_CONTENT);
   });
   it('Get a GIST after deleted', async () => {
-    const gistResponse = await axiosClient.get(`${usergistUrl}`);
-    expect(gistResponse.data.find((x) => x.id === `${userResponse.data.id}`)).to.equal(undefined);
+    let response;
+    try {
+      await axiosClient.get(userResponse.data.url);
+    } catch (error) {
+      response = error.response;
+    }
+    expect(response.status).to.equal(404);
   });
 });
