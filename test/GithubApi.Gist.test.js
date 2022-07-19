@@ -14,20 +14,19 @@ const gist = {
   public: true,
   files: {
     'saludoPromesa.js': {
-      content: 'let saludo= new Promise(function(resolve, reject) {\n'
-      + ' const saludar= "Hola Mundo!";\n'
-      + ' setTimeout(() => {\n'
-        + '   if (true){\n'
-          + '     resolve (saludar);\n'
-        + '   }\n'
-        + '   else {\n'
-          + '     reject ("No hemos podido saludarte");\n'
-        + '   }\n'
-      + ' },1000);\n'
-    + '})\n'
-    + 'saludo.then((saludar) => console.log(saludar));\n'
-    + 'saludo.catch(() => console.log(error));\n'
-    + 'saludo.finally(() => console.log("Saludo finalizado"));'
+      content: `const saludo= new Promise(function(resolve, reject) {
+        const saludar= "Hola Mundo!";
+        setTimeout(() => {
+          if (true) {
+            resolve(saludar);
+          } else {
+            reject("No hemos podido saludarte");
+          }
+        }, 1000);
+      });
+      saludo.then((saludar) => console.log(saludar));
+      saludo.catch((error) => console.log(error));
+      saludo.finally(() => console.log("Saludo finalizado"));`
     }
   }
 };
@@ -44,8 +43,6 @@ describe('DELETE Method', () => {
   });
   it('Creating GIST', async () => {
     expect(userResponse.status).to.equal(201);
-    expect(userResponse.data.description).to.equal('Example of a gist of JS Promise');
-    expect(userResponse.data.public).to.equal(true);
     expect(userResponse.data).to.containSubset(gist);
   });
   it('Get a GIST', async () => {
