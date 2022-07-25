@@ -43,7 +43,7 @@ describe('Methods PATCH & POST', () => {
       body: 'Learning and learningx2'
     });
     expect(issueUpdated.data.body).to.equal('Learning and learningx2');
-    expect(issueUpdated.data.body).to.not.equal('');   
+    expect(issueUpdated.data.body).to.not.equal('');
     expect(issueUpdated.status).to.equal(StatusCodes.OK);
     expect(issueUpdated.data.title).to.equal('Issue8');
   });
